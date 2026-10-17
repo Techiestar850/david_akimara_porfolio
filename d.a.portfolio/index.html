@@ -60,6 +60,10 @@ section:last-of-type{border-bottom:0}
 .sample .head{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--tint-green)}
 .sample .head b{font-size:1.05rem}
 .sample iframe{width:100%;height:480px;border:0;display:block}
+.sheet{overflow:auto;max-height:480px}
+.sheet table{border-collapse:collapse;width:100%;font-size:.95rem}
+.sheet td{border:1px solid var(--line);padding:6px 10px;text-align:left;white-space:nowrap}
+.sheet tr:first-child td{background:var(--tint-blue);font-weight:700}
 .empty{padding:22px 18px;margin:0}
 .media{border:2px solid var(--blue);border-radius:16px;overflow:hidden}
 .media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
@@ -160,7 +164,7 @@ footer{text-align:center;padding:28px 20px;border-top:3px solid var(--blue);colo
 </main>
 
 <footer>&copy; <span id="yr"></span> David Akimara. Thank you for trusting me.</footer>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 /* ============ EDIT YOUR DETAILS HERE ============ */
 const SETTINGS = {
@@ -179,7 +183,7 @@ const SETTINGS = {
   // 4. PDF work samples. Upload PDFs to your repo (e.g. a "samples" folder) and put the path here.
   samples: [
     { title: "Transcription sample",   file: "Transcripts.pdf" },   // e.g. "samples/transcription.pdf"
-    { title: "Data entry sample",      file: "d.a.portfolio/Apex_Transaction_Data_Entry (002).xlsx" },   // e.g. "samples/data-entry.pdf"
+   { title: "Data entry sample", file: "Data-entry.xlsx" },   // e.g. "samples/data-entry.xlsx"
     { title: "Academic writing sample", file: "" }   // e.g. "samples/academic-writing.pdf"
   ],
 
@@ -216,15 +220,28 @@ $('waBtn').href = 'https://wa.me/' + SETTINGS.whatsappNumber + '?text=' + encode
 $('waBtn').target = '_blank'; $('waBtn').rel = 'noopener';
 $('yr').textContent = new Date().getFullYear();
 
-// PDF samples
+// Work samples (PDF or spreadsheet)
 SETTINGS.samples.forEach(s => {
   const box = el('div','sample');
   const head = el('div','head','<b>' + esc(s.title) + '</b>');
   box.appendChild(head);
   if (s.file) {
-    head.insertAdjacentHTML('beforeend', '<span><a class="btn alt" target="_blank" rel="noopener" href="' + esc(s.file) + '">Open PDF</a></span>');
-    const f = el('iframe'); f.src = s.file; f.title = s.title; f.loading = 'lazy';
-    box.appendChild(f);
+    const isSheet = /\.(xlsx|xls|csv)$/i.test(s.file);
+    head.insertAdjacentHTML('beforeend', '<span><a class="btn alt" target="_blank" rel="noopener" href="' + esc(s.file) + '">' + (isSheet ? 'Download spreadsheet' : 'Open PDF') + '</a></span>');
+    if (isSheet) {
+      const wrap = el('div','sheet','<p class="empty">Loading spreadsheet…</p>');
+      box.appendChild(wrap);
+      fetch(s.file)
+        .then(r => { if (!r.ok) throw new Error(); return r.arrayBuffer(); })
+        .then(buf => {
+          const wb = XLSX.read(buf, { type: 'array' });
+          wrap.innerHTML = XLSX.utils.sheet_to_html(wb.Sheets[wb.SheetNames[0]], { header: '', footer: '' });
+        })
+        .catch(() => { wrap.innerHTML = '<p class="empty">Could not load the spreadsheet. Check the file name.</p>'; });
+    } else {
+      const f = el('iframe'); f.src = s.file; f.title = s.title; f.loading = 'lazy';
+      box.appendChild(f);
+    }
   } else {
     box.appendChild(el('p','empty','Sample coming soon.'));
   }
