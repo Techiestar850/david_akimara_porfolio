@@ -67,6 +67,7 @@ section:last-of-type{border-bottom:0}
 .sheet tr:nth-child(even) td{background:#f4b6c0}
 .sheet tr:first-child td{background:#ffff00;font-weight:800;font-size:1.15rem}
 .sheet tr:nth-child(2) td{background:#00b050;font-weight:700;position:sticky;top:0}
+.media video{width:100%;aspect-ratio:16/9;display:block;background:#000}
 .empty{padding:22px 18px;margin:0}
 .media{border:2px solid var(--blue);border-radius:16px;overflow:hidden}
 .media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
@@ -251,7 +252,7 @@ SETTINGS.samples.forEach(s => {
   $('samples').appendChild(box);
 });
 
-// Annotation links
+// Annotation videos and links
 function ytId(u){ const m = u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/); return m ? m[1] : null; }
 SETTINGS.annotations.forEach(a => {
   const box = el('div','media');
@@ -259,10 +260,19 @@ SETTINGS.annotations.forEach(a => {
   box.appendChild(head);
   if (a.url) {
     const id = ytId(a.url);
-    if (id) {
+    if (/\.(mp4|webm)$/i.test(a.url)) {
+      const v = el('video');
+      v.src = a.url;
+      v.controls = true;
+      v.preload = 'metadata';
+      v.playsInline = true;
+      v.disablePictureInPicture = true;
+      v.setAttribute('controlslist', 'nodownload noplaybackrate');
+      v.addEventListener('contextmenu', e => e.preventDefault());
+      box.appendChild(v);
+    } else if (id) {
       const f = el('iframe'); f.src = 'https://www.youtube.com/embed/' + id; f.title = a.title; f.loading = 'lazy'; f.allowFullscreen = true;
       box.appendChild(f);
-      head.insertAdjacentHTML('beforeend', '<a class="btn alt" target="_blank" rel="noopener" href="' + esc(a.url) + '">Open on YouTube</a>');
     } else {
       const host = /cvat/i.test(a.url) ? 'CVAT' : 'link';
       head.insertAdjacentHTML('beforeend', '<a class="btn" target="_blank" rel="noopener" href="' + esc(a.url) + '">Open in ' + host + '</a>');
