@@ -265,7 +265,7 @@ SETTINGS.annotations.forEach(a => {
     const id = ytId(a.url);
     if (/\.(jpe?g|png|webp|gif)$/i.test(a.url)) {
       const img = el('img');
-      img.src = a.url; img.alt = a.title; img.loading = 'lazy'; img.draggable = false;
+      img.src = a.url; img.alt = a.title; img.draggable = false;
       img.addEventListener('contextmenu', e => e.preventDefault());
       img.onerror = () => img.replaceWith(el('p','empty','This image could not be loaded. Check the file name.'));
       box.appendChild(img);
@@ -273,10 +273,9 @@ SETTINGS.annotations.forEach(a => {
       const f = el('iframe');
       f.src = 'https://www.youtube.com/embed/' + id;
       f.title = a.title; f.loading = 'lazy'; f.allowFullscreen = true;
-     if (/\/shorts\//i.test(a.url)) {
-  box.classList.add('short');
-  f.style.cssText = 'width:100%;aspect-ratio:9/16;display:block;border:0';
-}
+      if (/\/shorts\//i.test(a.url)) {
+        box.classList.add('short');
+        f.style.cssText = 'width:100%;aspect-ratio:9/16;display:block;border:0';
       }
       box.appendChild(f);
     } else {
