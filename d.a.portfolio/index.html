@@ -68,6 +68,7 @@ section:last-of-type{border-bottom:0}
 .sheet tr:first-child td{background:#ffff00;font-weight:800;font-size:1.15rem}
 .sheet tr:nth-child(2) td{background:#00b050;font-weight:700;position:sticky;top:0}
 .media video{width:100%;aspect-ratio:16/9;display:block;background:#000}
+.media img{width:100%;display:block;max-height:560px;object-fit:contain;background:#f4f7fb}
 .empty{padding:22px 18px;margin:0}
 .media{border:2px solid var(--blue);border-radius:16px;overflow:hidden}
 .media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
@@ -138,7 +139,7 @@ footer{text-align:center;padding:28px 20px;border-top:3px solid var(--blue);colo
     <div class="grid">
       <div class="card"><strong>Transcription</strong><p>Transcribed variuos audios with strict adherence to all the rules of trancription</p></div>
       <div class="card g"><strong>Data Entry</strong><p>Over one year of experience and working for various organizations.</p></div>
-      <div class="card"><strong>Video and Image Annotation</strong><p>I have annotated images and videos as well as captioning them for AI training.</p></div>
+      <div class="card"><strong>Video and Image Annotation</strong><p>I have annotated images and videos as well as captioning them for AI training.And I understand how to use tools like CVAT, Roboflow among others</p></div>
       <div class="card g"><strong>Academic Writing</strong><p>Over one year of experience with <strong>STRICT</strong> adherence to the rules and formating styles. Am well conversant with formating styles such as MLA, APA, Chicago and others.</p></div>
     </div>
 
@@ -147,7 +148,7 @@ footer{text-align:center;padding:28px 20px;border-top:3px solid var(--blue);colo
     <div class="grid" id="samples" style="grid-template-columns:1fr"></div>
 
     <h3 class="sub">Annotation projects</h3>
-    <p>Links to my annotation work on CVAT or YouTube.</p>
+    <p>A short look at my video and image annotation work.</p>
     <div class="grid" id="annotations" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"></div>
   </section>
 
@@ -252,7 +253,7 @@ SETTINGS.samples.forEach(s => {
   $('samples').appendChild(box);
 });
 
-// Annotation videos and links
+// Annotation videos, images and links
 function ytId(u){ const m = u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/); return m ? m[1] : null; }
 SETTINGS.annotations.forEach(a => {
   const box = el('div','media');
@@ -260,18 +261,19 @@ SETTINGS.annotations.forEach(a => {
   box.appendChild(head);
   if (a.url) {
     const id = ytId(a.url);
-    if (/\.(mp4|webm)$/i.test(a.url)) {
-      const v = el('video');
-      v.src = a.url;
-      v.controls = true;
-      v.preload = 'metadata';
-      v.playsInline = true;
-      v.disablePictureInPicture = true;
-      v.setAttribute('controlslist', 'nodownload noplaybackrate');
-      v.addEventListener('contextmenu', e => e.preventDefault());
-      box.appendChild(v);
+    if (/\.(jpe?g|png|webp|gif)$/i.test(a.url)) {
+      const img = el('img');
+      img.src = a.url; img.alt = a.title; img.loading = 'lazy'; img.draggable = false;
+      img.addEventListener('contextmenu', e => e.preventDefault());
+      img.onerror = () => img.replaceWith(el('p','empty','This image could not be loaded. Check the file name.'));
+      box.appendChild(img);
     } else if (id) {
-      const f = el('iframe'); f.src = 'https://www.youtube.com/embed/' + id; f.title = a.title; f.loading = 'lazy'; f.allowFullscreen = true;
+      const f = el('iframe');
+      f.src = 'https://www.youtube.com/embed/' + id;
+      f.title = a.title; f.loading = 'lazy'; f.allowFullscreen = true;
+      if (/\/shorts\//i.test(a.url)) {
+        f.style.cssText = 'width:min(100%,315px);aspect-ratio:9/16;margin:0 auto;display:block;padding:12px 0';
+      }
       box.appendChild(f);
     } else {
       const host = /cvat/i.test(a.url) ? 'CVAT' : 'link';
@@ -282,7 +284,6 @@ SETTINGS.annotations.forEach(a => {
   }
   $('annotations').appendChild(box);
 });
-
 // Highlight current nav tab
 const links = [...document.querySelectorAll('nav a')];
 const obs = new IntersectionObserver(es => es.forEach(e => {
