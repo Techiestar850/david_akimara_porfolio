@@ -67,7 +67,10 @@ section:last-of-type{border-bottom:0}
 .sheet tr:first-child td{background:#ffff00;font-weight:800;font-size:1.15rem}
 .sheet tr:nth-child(2) td{background:#00b050;font-weight:700;position:sticky;top:0}
 .media video{width:100%;aspect-ratio:16/9;display:block;background:#000}
-.media img{width:100%;display:block;max-height:560px;object-fit:contain;background:#f4f7fb}
+#annotations{display:flex!important;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.media{flex:1 1 300px}
+.media.short{flex:0 1 260px}
+.media img{width:100%;height:auto;display:block}
 .empty{padding:22px 18px;margin:0}
 .media{border:2px solid var(--blue);border-radius:16px;overflow:hidden}
 .media iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
@@ -270,8 +273,10 @@ SETTINGS.annotations.forEach(a => {
       const f = el('iframe');
       f.src = 'https://www.youtube.com/embed/' + id;
       f.title = a.title; f.loading = 'lazy'; f.allowFullscreen = true;
-      if (/\/shorts\//i.test(a.url)) {
-        f.style.cssText = 'width:min(100%,315px);aspect-ratio:9/16;margin:0 auto;display:block;padding:12px 0';
+     if (/\/shorts\//i.test(a.url)) {
+  box.classList.add('short');
+  f.style.cssText = 'width:100%;aspect-ratio:9/16;display:block;border:0';
+}
       }
       box.appendChild(f);
     } else {
