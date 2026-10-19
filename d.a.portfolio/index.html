@@ -25,11 +25,16 @@ a{color:var(--blue)}
 header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:3px solid var(--green)}
 .bar{max-width:1100px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .brand{font-family:'Fraunces',serif;font-weight:800;font-size:1.4rem;color:var(--title);text-decoration:none}
-nav{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
-nav a{border:2px solid var(--blue);color:var(--blue);background:#fff;padding:6px 14px;font-weight:700;font-size:.95rem;text-decoration:none;border-radius:0}
-nav a:nth-child(even){border-color:var(--green);color:var(--green)}
-nav a:hover,nav a.on{color:#fff;background:var(--blue)}
-nav a:nth-child(even):hover,nav a:nth-child(even).on{background:var(--green)}
+nav{display:flex;gap:0;margin-left:auto;border-radius:14px;overflow:hidden;border:2px solid var(--blue)}
+nav a{padding:8px 16px;font-weight:700;font-size:.95rem;text-decoration:none;border:0;border-left:1px solid rgba(0,0,0,.2);border-radius:0;color:#fff}
+nav a:first-child{border-left:0}
+nav a:nth-child(1){background:#2a9d6f}
+nav a:nth-child(2){background:#d63a3a}
+nav a:nth-child(3){background:#f4c20d;color:#000}
+nav a:nth-child(4){background:#8b5a2b}
+nav a:nth-child(5){background:#f5ecd0;color:#000}
+nav a:hover{filter:brightness(1.08)}
+nav a.on,nav a:active{background:#1d5fc4;color:#fff}
 
 main{max-width:1100px;margin:0 auto;padding:0 20px}
 section{padding:56px 0;border-bottom:1px solid var(--line)}
@@ -81,6 +86,7 @@ section:last-of-type{border-bottom:0}
 footer{text-align:center;padding:28px 20px;border-top:3px solid var(--blue);color:#000}
 
 @media(max-width:760px){
+  nav a{padding:7px 9px;font-size:.8rem}
   .hero{grid-template-columns:1fr;gap:36px;text-align:center}
   .photo{max-width:300px;margin:0 auto}
   .btns{justify-content:center}
@@ -289,6 +295,10 @@ SETTINGS.annotations.forEach(a => {
 });
 // Highlight current nav tab
 const links = [...document.querySelectorAll('nav a')];
+  links.forEach(l => l.addEventListener('click', () => {
+  links.forEach(x => x.classList.remove('on'));
+  l.classList.add('on');
+}));
 const obs = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) links.forEach(l => l.classList.toggle('on', l.getAttribute('href') === '#' + e.target.id));
 }), { rootMargin: '-40% 0px -55% 0px' });
