@@ -311,23 +311,7 @@ SETTINGS.annotations.forEach(a => {
   }
   $('annotations').appendChild(box);
 });
-  // Data cleaning samples (images)
-SETTINGS.cleaning.forEach(c => {
-  const box = el('div','media');
-  box.appendChild(el('div','head','<b>' + esc(c.title) + '</b>'));
-  if (c.url) {
-    const img = el('img');
-    img.src = c.url; img.alt = c.title; img.loading = 'lazy';
-    img.title = 'Click to enlarge';
-    img.addEventListener('click', () => window.open(c.url, '_blank', 'noopener'));
-    img.onerror = () => img.replaceWith(el('p','empty','This image could not be loaded. Check the file name.'));
-    box.appendChild(img);
-    if (c.caption) box.appendChild(el('p','cap',esc(c.caption)));
-  } else {
-    box.appendChild(el('p','empty','Sample coming soon.'));
-  }
-  $('cleaning').appendChild(box);
-});
+
 // Highlight current nav tab
 const links = [...document.querySelectorAll('nav a')];
   links.forEach(l => l.addEventListener('click', () => {
