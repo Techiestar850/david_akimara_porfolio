@@ -218,14 +218,13 @@ const SETTINGS = {
   annotations: [
     { title: "Video annotation project", url: "https://youtube.com/shorts/zo_ti73ISPI?feature=share" },
     { title: "Image annotation project", url: "image-annotation.jpeg" }
-  ]
-},
-   // 6. Data cleaning samples: upload an image to your repo (e.g. an "images" folder) and put the path here.
+  ],
+
+  // 6. Data cleaning samples: upload an image to the d.a.portfolio folder and put its file name here.
   cleaning: [
-    { title: "Messy vs cleaned data", url: "images/cleaning-sample-1.png", caption: "Left: raw export. Right: cleaned and validated." }
-    // add more like this, separated by commas:
-    // { title: "Unit price cleaning", url: "images/cleaning-sample-2.png", caption: "KES text converted to numbers." }
+    { title: "Messy vs cleaned data", url: "cleaning-sample-1.png", caption: "Left: raw export. Right: cleaned and validated." }
   ]
+};
 /* ================================================= */
 
 const $ = id => document.getElementById(id);
@@ -313,7 +312,22 @@ SETTINGS.annotations.forEach(a => {
   }
   $('annotations').appendChild(box);
 });
-
+// Data cleaning samples
+SETTINGS.cleaning.forEach(c => {
+  const box = el('div','media');
+  box.appendChild(el('div','head','<b>' + esc(c.title) + '</b>'));
+  if (c.url) {
+    const link = el('a'); link.href = c.url; link.target = '_blank'; link.rel = 'noopener';
+    const img = el('img'); img.src = c.url; img.alt = c.title;
+    img.onerror = () => img.replaceWith(el('p','empty','This image could not be loaded. Check the file name.'));
+    link.appendChild(img);
+    box.appendChild(link);
+    if (c.caption) box.appendChild(el('p','cap',esc(c.caption)));
+  } else {
+    box.appendChild(el('p','empty','Sample coming soon.'));
+  }
+  $('cleaning').appendChild(box);
+});
 // Highlight current nav tab
 const links = [...document.querySelectorAll('nav a')];
   links.forEach(l => l.addEventListener('click', () => {
