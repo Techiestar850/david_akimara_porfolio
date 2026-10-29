@@ -215,7 +215,13 @@ const SETTINGS = {
     { title: "Video annotation project", url: "https://youtube.com/shorts/zo_ti73ISPI?feature=share" },
     { title: "Image annotation project", url: "image-annotation.jpeg" }
   ]
-};
+},
+   // 6. Data cleaning samples: upload an image to your repo (e.g. an "images" folder) and put the path here.
+  cleaning: [
+    { title: "Messy vs cleaned data", url: "images/cleaning-sample-1.png", caption: "Left: raw export. Right: cleaned and validated." }
+    // add more like this, separated by commas:
+    // { title: "Unit price cleaning", url: "images/cleaning-sample-2.png", caption: "KES text converted to numbers." }
+  ]
 /* ================================================= */
 
 const $ = id => document.getElementById(id);
@@ -302,13 +308,7 @@ SETTINGS.annotations.forEach(a => {
     box.appendChild(el('p','empty','Project link coming soon.'));
   }
   $('annotations').appendChild(box);
-}),
-    // 6. Data cleaning samples: upload an image to your repo (e.g. an "images" folder) and put the path here.
-  cleaning: [
-    { title: "Messy vs cleaned data", url: "images/cleaning-sample-1.png", caption: "Left: raw export. Right: cleaned and validated." }
-    // add more like this, separated by commas:
-    // { title: "Unit price cleaning", url: "images/cleaning-sample-2.png", caption: "KES text converted to numbers." }
-  ]
+});
   // Data cleaning samples (images)
 SETTINGS.cleaning.forEach(c => {
   const box = el('div','media');
