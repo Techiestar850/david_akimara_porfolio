@@ -84,7 +84,9 @@ section:last-of-type{border-bottom:0}
 .contact .grid{max-width:760px}
 .contact .card a{font-weight:700;word-break:break-word}
 footer{text-align:center;padding:28px 20px;border-top:3px solid var(--blue);color:#000}
-
+#cleaning .media{flex:none}
+#cleaning .media img{cursor:zoom-in}
+.media .cap{margin:0;padding:12px 18px;font-size:.95rem;border-top:2px solid var(--blue)}
 @media(max-width:760px){
  nav a{padding:10px 2px;font-size:.78rem}
   .hero{grid-template-columns:1fr;gap:36px;text-align:center}
@@ -163,6 +165,9 @@ footer{text-align:center;padding:28px 20px;border-top:3px solid var(--blue);colo
     <h3 class="sub">Annotation projects</h3>
     <p>A short look at my video and image annotation work.</p>
     <div class="grid" id="annotations" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"></div>
+        <h3 class="sub">Data cleaning samples</h3>
+    <p>Before and after examples of messy data I have cleaned.</p>
+    <div class="grid" id="cleaning" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"></div>
   </section>
 
   <section id="education" class="edu">
@@ -297,6 +302,29 @@ SETTINGS.annotations.forEach(a => {
     box.appendChild(el('p','empty','Project link coming soon.'));
   }
   $('annotations').appendChild(box);
+}),
+    // 6. Data cleaning samples: upload an image to your repo (e.g. an "images" folder) and put the path here.
+  cleaning: [
+    { title: "Messy vs cleaned data", url: "images/cleaning-sample-1.png", caption: "Left: raw export. Right: cleaned and validated." }
+    // add more like this, separated by commas:
+    // { title: "Unit price cleaning", url: "images/cleaning-sample-2.png", caption: "KES text converted to numbers." }
+  ]
+  // Data cleaning samples (images)
+SETTINGS.cleaning.forEach(c => {
+  const box = el('div','media');
+  box.appendChild(el('div','head','<b>' + esc(c.title) + '</b>'));
+  if (c.url) {
+    const img = el('img');
+    img.src = c.url; img.alt = c.title; img.loading = 'lazy';
+    img.title = 'Click to enlarge';
+    img.addEventListener('click', () => window.open(c.url, '_blank', 'noopener'));
+    img.onerror = () => img.replaceWith(el('p','empty','This image could not be loaded. Check the file name.'));
+    box.appendChild(img);
+    if (c.caption) box.appendChild(el('p','cap',esc(c.caption)));
+  } else {
+    box.appendChild(el('p','empty','Sample coming soon.'));
+  }
+  $('cleaning').appendChild(box);
 });
 // Highlight current nav tab
 const links = [...document.querySelectorAll('nav a')];
